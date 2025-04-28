@@ -1,0 +1,136 @@
+### 变量设置
+@baseUrl = http://localhost:3002/api
+@authToken = your_auth_token_here
+@userId = 1
+@postId = 1
+
+### 健康检查
+GET {{baseUrl}}/health
+Accept: application/json
+
+### ==================== 用户相关 API ====================
+
+### 获取所有用户
+GET {{baseUrl}}/user/all
+Accept: application/json
+
+### 获取指定用户
+GET {{baseUrl}}/user/{{userId}}
+Accept: application/json
+
+### 获取用户草稿
+GET {{baseUrl}}/user/{{userId}}/drafts
+Accept: application/json
+
+### 创建新用户
+POST {{baseUrl}}/user/signup
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "bio": "Software developer passionate about web technologies"
+}
+
+### 更新用户
+PUT {{baseUrl}}/user/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "John Updated",
+  "bio": "Updated bio information"
+}
+
+### 删除用户
+DELETE {{baseUrl}}/user/{{userId}}
+Authorization: Bearer {{authToken}}
+
+### ==================== 文章相关 API ====================
+
+### 获取所有文章
+GET {{baseUrl}}/post
+Accept: application/json
+
+### 获取已发布文章
+GET {{baseUrl}}/post?published=true
+Accept: application/json
+
+### 获取指定文章
+GET {{baseUrl}}/post/{{postId}}
+Accept: application/json
+
+### 获取文章浏览数
+GET {{baseUrl}}/post/{{postId}}/views
+Accept: application/json
+
+### 创建新文章
+POST {{baseUrl}}/post
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Getting Started with Fastify and Prisma",
+  "content": "This is a comprehensive guide to using Fastify with Prisma ORM...",
+  "published": false,
+  "authorId": {{userId}},
+  "tags": ["fastify", "prisma", "tutorial"]
+}
+
+### 发布文章
+PUT {{baseUrl}}/post/publish/{{postId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "published": true
+}
+
+### 更新文章
+PUT {{baseUrl}}/post/{{postId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Updated Title",
+  "content": "Updated content with more information...",
+  "tags": ["fastify", "prisma", "updated"]
+}
+
+### 删除文章
+DELETE {{baseUrl}}/post/{{postId}}
+Authorization: Bearer {{authToken}}
+
+### ==================== 认证相关 API ====================
+
+### 登录
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "securepassword123"
+}
+
+### 注册
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "New User",
+  "email": "new.user@example.com",
+  "password": "securepassword123"
+}
+
+### 刷新令牌
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{}
+
+### 登出
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{authToken}}
+
+{}
