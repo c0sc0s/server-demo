@@ -1,16 +1,35 @@
 import { FastifyPluginAsync } from "fastify";
-import userRoutes from "./user";
-// import postRoutes from "./post";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
+
+import authRoutes from "./auth";
+import userRoutes from "./user";
+import healthRoutes from "./health";
+
+interface RouteConfig {
+  prefix?: string;
+  routes: FastifyPluginAsync;
+}
+
+const routeConfigs: RouteConfig[] = [
+  {
+    prefix: "/auth",
+    routes: authRoutes,
+  },
+  {
+    prefix: "/users",
+    routes: userRoutes,
+  },
+  {
+    routes: healthRoutes,
+  },
+];
 
 const routes: FastifyPluginAsync = async (fastify) => {
   const app = fastify.withTypeProvider<ZodTypeProvider>();
 
-  // 注册用户路由
-  app.register(userRoutes, { prefix: "/user" });
-
-  // 注册文章路由
-  // fastify.register(postRoutes, { prefix: "/post" });
+  for (const routeConfig of routeConfigs) {
+    app.register(routeConfig.routes, { prefix: routeConfig.prefix || "" });
+  }
 };
 
 export default routes;

@@ -1,22 +1,43 @@
 import { FastifyPluginAsync } from "fastify";
-import { getAllUsers, getUserById, getUserDrafts, signup } from "./handlers";
-import { getUserParams, getUserDraftsParams, signupBody } from "./schema";
+import {
+  getAllUsers,
+  getUserById,
+  getCurrentUser,
+  searchUsers,
+  getFriends,
+  getFriendRequests,
+  addFriend,
+  handleFriendRequest,
+} from "./handlers";
+import {
+  getUserRouteSchema,
+  searchUsersRouteSchema,
+  getCurrentUserRouteSchema,
+  getFriendsRouteSchema,
+  getFriendRequestsRouteSchema,
+  addFriendRouteSchema,
+  handleFriendRequestRouteSchema,
+} from "./schema";
 
 const userRoutes: FastifyPluginAsync = async (fastify) => {
-  // signup
-  fastify.post("/signup", { schema: { body: signupBody } }, signup);
-
-  // GET /api/user/all
+  // 用户个人资料相关路由
+  fastify.get("/me", { schema: getCurrentUserRouteSchema }, getCurrentUser);
   fastify.get("/all", getAllUsers);
+  fastify.get("/search", { schema: searchUsersRouteSchema }, searchUsers);
+  fastify.get("/:id", { schema: getUserRouteSchema }, getUserById);
 
-  // GET /api/user/:id
-  fastify.get("/:id", { schema: { params: getUserParams } }, getUserById);
-
-  // GET /api/user/:id/drafts
+  // 好友相关路由
+  fastify.get("/friends", { schema: getFriendsRouteSchema }, getFriends);
   fastify.get(
-    "/:id/drafts",
-    { schema: { params: getUserDraftsParams } },
-    getUserDrafts
+    "/friend-requests",
+    { schema: getFriendRequestsRouteSchema },
+    getFriendRequests
+  );
+  fastify.post("/add-friend", { schema: addFriendRouteSchema }, addFriend);
+  fastify.post(
+    "/handle-friend-request",
+    { schema: handleFriendRequestRouteSchema },
+    handleFriendRequest
   );
 };
 

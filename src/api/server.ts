@@ -1,12 +1,15 @@
 import Fastify from "fastify";
 import routes from "./routes";
 import dbPlugin from "./plugins/db";
-import { serializerCompiler } from "fastify-type-provider-zod";
-import { validatorCompiler } from "fastify-type-provider-zod";
-import { loggerConfig } from "./config";
+import authPlugin from "./plugins/auth";
+import {
+  serializerCompiler,
+  validatorCompiler,
+} from "fastify-type-provider-zod";
+import { loggerConfig, publicPaths } from "./config";
 import "dotenv/config";
 
-const BASE_URL = process.env.BASE_URL || "";
+export const BASE_URL = process.env.BASE_URL || "";
 
 const server = Fastify({
   logger: loggerConfig,
@@ -18,6 +21,9 @@ server.setSerializerCompiler(serializerCompiler);
 
 // 注册插件
 server.register(dbPlugin);
+server.register(authPlugin, {
+  publicPaths: publicPaths,
+});
 
 // 注册路由
 server.register(routes, { prefix: BASE_URL });

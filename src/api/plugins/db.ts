@@ -2,13 +2,6 @@ import { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 import { PrismaClient } from "@prisma/client";
 
-// 在文件顶部添加类型声明
-declare module "fastify" {
-  interface FastifyInstance {
-    prisma: PrismaClient;
-  }
-}
-
 const prismaPlugin: FastifyPluginAsync = fp(async (fastify) => {
   const prisma = new PrismaClient();
 

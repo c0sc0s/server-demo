@@ -1,136 +1,110 @@
 ### 变量设置
-@baseUrl = http://localhost:3002/api
-@authToken = your_auth_token_here
+@baseUrl = http://localhost:3001/api/v1
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiam9obi5kb2VAZXhhbTJwbGUuY29tIiwiaWF0IjoxNzA3OTEwNTU1LCJleHAiOjE3MDg1MTUzNTV9.aTsPDHJFu1r-Ix8vY2orpZ3o7O4TpjZjvRdEZJEsXX8
 @userId = 1
-@postId = 1
+@friendId = 2
+@requestId = 1
 
 ### 健康检查
 GET {{baseUrl}}/health
 Accept: application/json
 
-### ==================== 用户相关 API ====================
-
-### 获取所有用户
-GET {{baseUrl}}/user/all
-Accept: application/json
-
-### 获取指定用户
-GET {{baseUrl}}/user/{{userId}}
-Accept: application/json
-
-### 获取用户草稿
-GET {{baseUrl}}/user/{{userId}}/drafts
-Accept: application/json
-
-### 创建新用户
-POST {{baseUrl}}/user/signup
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "bio": "Software developer passionate about web technologies"
-}
-
-### 更新用户
-PUT {{baseUrl}}/user/{{userId}}
-Content-Type: application/json
-Authorization: Bearer {{authToken}}
-
-{
-  "name": "John Updated",
-  "bio": "Updated bio information"
-}
-
-### 删除用户
-DELETE {{baseUrl}}/user/{{userId}}
-Authorization: Bearer {{authToken}}
-
-### ==================== 文章相关 API ====================
-
-### 获取所有文章
-GET {{baseUrl}}/post
-Accept: application/json
-
-### 获取已发布文章
-GET {{baseUrl}}/post?published=true
-Accept: application/json
-
-### 获取指定文章
-GET {{baseUrl}}/post/{{postId}}
-Accept: application/json
-
-### 获取文章浏览数
-GET {{baseUrl}}/post/{{postId}}/views
-Accept: application/json
-
-### 创建新文章
-POST {{baseUrl}}/post
-Content-Type: application/json
-Authorization: Bearer {{authToken}}
-
-{
-  "title": "Getting Started with Fastify and Prisma",
-  "content": "This is a comprehensive guide to using Fastify with Prisma ORM...",
-  "published": false,
-  "authorId": {{userId}},
-  "tags": ["fastify", "prisma", "tutorial"]
-}
-
-### 发布文章
-PUT {{baseUrl}}/post/publish/{{postId}}
-Content-Type: application/json
-Authorization: Bearer {{authToken}}
-
-{
-  "published": true
-}
-
-### 更新文章
-PUT {{baseUrl}}/post/{{postId}}
-Content-Type: application/json
-Authorization: Bearer {{authToken}}
-
-{
-  "title": "Updated Title",
-  "content": "Updated content with more information...",
-  "tags": ["fastify", "prisma", "updated"]
-}
-
-### 删除文章
-DELETE {{baseUrl}}/post/{{postId}}
-Authorization: Bearer {{authToken}}
-
 ### ==================== 认证相关 API ====================
+
+### 注册用户
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "tesstuser",
+  "email": "tes2t@example.com",
+  "password": "123456",
+  "phone": "123456789201"
+}
 
 ### 登录
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "john.doe@example.com",
-  "password": "securepassword123"
+  "email": "tes2t@example.com",
+  "password": "123456"
 }
-
-### 注册
-POST {{baseUrl}}/auth/register
-Content-Type: application/json
-
-{
-  "name": "New User",
-  "email": "new.user@example.com",
-  "password": "securepassword123"
-}
-
-### 刷新令牌
-POST {{baseUrl}}/auth/refresh
-Content-Type: application/json
-Authorization: Bearer {{authToken}}
-
-{}
 
 ### 登出
 POST {{baseUrl}}/auth/logout
 Authorization: Bearer {{authToken}}
 
-{}
+### ==================== 用户相关 API ====================
+
+### 获取当前登录用户信息
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### 获取所有用户
+GET {{baseUrl}}/users/all
+Accept: application/json
+
+### 获取指定用户信息
+GET {{baseUrl}}/users/{{userId}}
+Accept: application/json
+Authorization: Bearer {{authToken}}
+##token
+
+### 搜索用户
+GET {{baseUrl}}/users/search?keyword=test&page=1&limit=10
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### ==================== 好友相关 API ====================
+
+### 获取好友列表
+GET {{baseUrl}}/users/friends
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### 获取待处理的好友请求
+GET {{baseUrl}}/users/friend-requests
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### 发送好友请求
+POST {{baseUrl}}/users/add-friend
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "userId": {{friendId}},
+  "message": "我们一起玩游戏吧！"
+}
+
+### 处理好友请求 - 接受
+POST {{baseUrl}}/users/handle-friend-request
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "requestId": {{requestId}},
+  "action": "accept"
+}
+
+### 处理好友请求 - 拒绝
+POST {{baseUrl}}/users/handle-friend-request
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "requestId": {{requestId}},
+  "action": "reject"
+}
+
+### 处理好友请求 - 屏蔽
+POST {{baseUrl}}/users/handle-friend-request
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "requestId": {{requestId}},
+  "action": "block"
+}
